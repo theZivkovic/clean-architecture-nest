@@ -1,0 +1,56 @@
+
+### Define the variables
+
+@userId = {{createUserRequest.response.body.id}}
+@postId = {{addPostRequest.response.body.id}}
+
+
+### Get users
+
+GET http://localhost:3000/users
+Content-Type: application/json
+
+### Create user
+# @name createUserRequest
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "firstName": "Jo",
+    "lastName": "Doe"
+}
+
+### Get user by id
+
+GET http://localhost:3000/users/{{userId}}
+Content-Type: application/json
+
+### Add user post
+# @name addPostRequest
+
+POST http://localhost:3000/posts
+Content-Type: application/json
+
+{
+    "userId": "{{userId}}",
+    "title": "AAAA",
+    "body": "B"
+}
+
+### Get users posts
+
+GET http://localhost:3000/users/{{userId}}/posts
+Content-Type: application/json
+
+
+### Like posts
+
+POST http://localhost:3000/posts/{{postId}}/likes/{{userId}}
+Content-Type: application/json
+
+### Unlike posts
+
+DELETE http://localhost:3000/posts/{{postId}}/likes/{{userId}}
+Content-Type: application/json
+
