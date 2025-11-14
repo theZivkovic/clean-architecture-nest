@@ -40,4 +40,8 @@ export class User {
   static create(user: Omit<ClassFields<User>, 'id'>, idGenerator: IIDGenerator): User {
     return new User(idGenerator.generateId(), user.email, user.firstName, user.lastName)
   }
+
+  static fromFields(user: ClassFields<User>): User {
+    return new User(user.id, user.email, user.firstName, user.lastName)
+  }
 }
