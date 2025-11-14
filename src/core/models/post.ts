@@ -41,4 +41,8 @@ export class Post {
   static create(post: Omit<ClassFields<Post>, 'id'>, idGenerator: IIDGenerator): Post {
     return new Post(idGenerator.generateId(), post.title, post.body, post.userId)
   }
+
+  static fromFields(post: ClassFields<Post>): Post {
+    return new Post(post.id, post.title, post.body, post.userId)
+  }
 }
