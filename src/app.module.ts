@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
+import { PgDIBuilder } from './infrastructure/dependencyInjection/pgDIBuilder'
 import { ApplicationDIBuilder } from './application/dependencyInjection/applicationDIBuilder'
-import { PresentationSetter } from './presentation/dependencyInjection/presentationDIBuilder'
-import { InMemoryDIBuilder } from './infrastructure/dependencyInjection/inMemoryDIBuilder'
+import { PresentationDIBuilder } from './presentation/dependencyInjection/presentationDIBuilder'
 
-const infrastructureSetter = new InMemoryDIBuilder()
+const infrastructureSetter = new PgDIBuilder()
 const applicationSetter = new ApplicationDIBuilder()
-const presentationSetter = new PresentationSetter()
+const presentationSetter = new PresentationDIBuilder()
 
 @Module({
   imports: [
