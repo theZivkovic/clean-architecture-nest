@@ -5,7 +5,7 @@ import { PostsController } from '../posts/posts.controller'
 import { UsersService } from '../users/users.service'
 import { PostsService } from '../posts/posts.service'
 
-export class PresentationSetter {
+export class PresentationDIBuilder {
   buildImports(): Array<DynamicModule> {
     return [CacheModule.register()]
   }

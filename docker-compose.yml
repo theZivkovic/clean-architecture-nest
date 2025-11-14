@@ -1,0 +1,58 @@
+services:
+  postgresdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: clean
+      POSTGRES_PASSWORD: arch123
+      POSTGRES_DB: clean-arch-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresdb_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7.0
+    command: sh -c "chown 999:999 /etc/mongodb/keyfile || true; chmod 600 /etc/mongodb/keyfile || true; exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --port 27017 --keyFile /etc/mongodb/keyfile"
+    ports:
+      - 27017:27017
+    networks:
+      - mongo-net
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: clean
+      MONGO_INITDB_ROOT_PASSWORD: arch123
+      MONGO_INITDB_DATABASE: clean-arch-db
+    volumes:
+      - ./mongo-secrets/mongo-keyfile:/etc/mongodb/keyfile
+      - "mongodb_data:/data/db"
+      - "mongodb_config:/data/configdb"
+
+  mongo-init:
+    image: mongo:latest
+    container_name: mongo-init
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-net
+    command: >
+      bash -c "
+        sleep 10 &&
+        mongosh -u clean -p arch123 --host mongodb:27017 <<EOF
+          var config = {
+            _id : 'rs0',
+            members: [
+              { _id : 0, host : 'mongodb:27017' }
+            ]
+          };
+          rs.initiate(config);
+        EOF
+      "
+
+volumes:
+  postgresdb_data:
+  mongodb_data:
+  mongodb_config:
+
+
+networks:
+  mongo-net:
