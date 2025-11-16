@@ -16,12 +16,12 @@ export class GetUserPostsUseCase implements IUseCase<string, Array<Post>> {
   ) {}
 
   async execute(userId: string): Promise<Result<Array<Post>>> {
-    const user = await this.usersRepository.getById(userId)
+    const user = await this.usersRepository.getById(userId, undefined)
 
     if (!user) {
       return failure(new UserWithIdNotFound(userId))
     }
 
-    return success(await this.postsRepository.getByUserId(userId))
+    return success(await this.postsRepository.getByUserId(userId, undefined))
   }
 }

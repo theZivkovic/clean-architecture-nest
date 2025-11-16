@@ -5,7 +5,8 @@ import { IUsersRepository } from 'src/core/interfaces/repositories/usersReposito
 import { PgUsersRepository } from '../repositories/usersRepository/pg/pgUsersRepository'
 import { IPostsRepository } from 'src/core/interfaces/repositories/postsRepository'
 import { PgPostsRepository } from '../repositories/postsRepository/pg/pgPostsRepository'
-
+import { ITransactionFactory } from 'src/core/transactions/transaction'
+import { PgTransactionFactory } from '../transactions/pg/pgTransactions'
 import { PgPostLike } from '../repositories/postLikesRepository/pg/pgPostLike'
 import { IPostLikesRepository } from 'src/core/interfaces/repositories/postLikesRepository'
 import { PgPostLikesRepository } from '../repositories/postLikesRepository/pg/pgPostLikesRepository'
@@ -39,6 +40,10 @@ export class PgDIBuilder extends BaseInfrastructureDIBuilder {
       {
         provide: IPostLikesRepository,
         useClass: PgPostLikesRepository,
+      },
+      {
+        provide: ITransactionFactory,
+        useClass: PgTransactionFactory,
       },
       PgUsersRepository,
       PgPostsRepository,

@@ -26,7 +26,7 @@ export class CreateUserUserCase implements IUseCase<Omit<ClassFields<User>, 'id'
         this.idGenerator
       )
 
-      return success(await this.usersRepository.save(newUser))
+      return success(await this.usersRepository.save(newUser, undefined))
     } catch (err) {
       if (err instanceof CoreError) {
         return failure(err)

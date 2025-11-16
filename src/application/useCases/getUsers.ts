@@ -9,6 +9,6 @@ export class GetUsersUseCase implements IUseCase<void, Array<User>> {
   constructor(@Inject(IUsersRepository) private readonly usersRepository: IUsersRepository) {}
 
   async execute() {
-    return success(await this.usersRepository.getAll())
+    return success(await this.usersRepository.getAll(undefined))
   }
 }

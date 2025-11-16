@@ -1,10 +1,11 @@
 import { Post } from 'src/core/models/post'
+import { ITransaction } from 'src/core/transactions/transaction'
 
 export interface IPostsRepository {
-  save: (post: Post) => Promise<Post>
-  getById: (id: string) => Promise<Post | undefined>
-  getByUserId: (userId: string) => Promise<Array<Post>>
-  countByUserId: (userId: string) => Promise<number>
+  save: (post: Post, transaction: ITransaction | undefined) => Promise<Post>
+  getById: (id: string, transaction: ITransaction | undefined) => Promise<Post | undefined>
+  getByUserId: (userId: string, transaction: ITransaction | undefined) => Promise<Array<Post>>
+  countByUserId: (userId: string, transaction: ITransaction | undefined) => Promise<number>
 }
 
 export const IPostsRepository = Symbol('IPostsRepository')

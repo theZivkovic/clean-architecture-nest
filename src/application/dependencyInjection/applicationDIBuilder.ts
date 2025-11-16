@@ -6,6 +6,7 @@ import { GetUserPostsUseCase } from '../useCases/getUserPosts'
 import { GetUsersUseCase } from '../useCases/getUsers'
 import { LikePostUseCase } from '../useCases/likePost'
 import { UnlikePostUseCase } from '../useCases/unlikePost'
+import { UnitOfWork } from '../utils/unitOfWork'
 
 export class ApplicationDIBuilder {
   buildImports(): Array<DynamicModule> {
@@ -20,6 +21,7 @@ export class ApplicationDIBuilder {
       GetUsersUseCase,
       LikePostUseCase,
       UnlikePostUseCase,
+      UnitOfWork,
     ]
   }
 }

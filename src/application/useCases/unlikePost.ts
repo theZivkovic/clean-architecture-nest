@@ -10,6 +10,7 @@ import { PostLike } from 'src/core/models/postLike'
 import { PostWithIdNotFound } from 'src/core/errors/postWithIdNotFound'
 import { IPostLikesRepository } from 'src/core/interfaces/repositories/postLikesRepository'
 import { UserLikesOwnPosts } from 'src/core/errors/userLikesOwnPosts'
+import { UnitOfWork } from '../utils/unitOfWork'
 
 @Injectable()
 export class UnlikePostUseCase implements IUseCase<ClassFields<PostLike>, void> {
@@ -19,17 +20,18 @@ export class UnlikePostUseCase implements IUseCase<ClassFields<PostLike>, void> 
     @Inject(IUsersRepository)
     private readonly usersRepository: IUsersRepository,
     @Inject(IPostLikesRepository)
-    private readonly postLikesRepository: IPostLikesRepository
+    private readonly postLikesRepository: IPostLikesRepository,
+    private readonly unitOfWork: UnitOfWork
   ) {}
 
   async execute(postUnlikeRequest: ClassFields<PostLike>): Promise<Result<void>> {
-    const user = await this.usersRepository.getById(postUnlikeRequest.userId)
+    const user = await this.usersRepository.getById(postUnlikeRequest.userId, undefined)
 
     if (!user) {
       return failure(new UserWithIdNotFound(postUnlikeRequest.userId))
     }
 
-    const post = await this.postsRepository.getById(postUnlikeRequest.postId)
+    const post = await this.postsRepository.getById(postUnlikeRequest.postId, undefined)
 
     if (!post) {
       return failure(new PostWithIdNotFound(postUnlikeRequest.postId))
@@ -39,17 +41,19 @@ export class UnlikePostUseCase implements IUseCase<ClassFields<PostLike>, void> 
       return failure(new UserLikesOwnPosts(user.id))
     }
 
-    try {
-      post.decreaseLikes()
+    return this.unitOfWork.execute(async (transaction) => {
+      try {
+        post.decreaseLikes()
 
-      await this.postsRepository.save(post)
+        await this.postsRepository.save(post, transaction)
 
-      return success(await this.postLikesRepository.delete(post.id, user.id))
-    } catch (err) {
-      if (err instanceof CoreError) {
-        return failure(err)
+        return success(await this.postLikesRepository.delete(post.id, user.id, transaction))
+      } catch (err) {
+        if (err instanceof CoreError) {
+          return failure(err)
+        }
+        throw err
       }
-      throw err
-    }
+    })
   }
 }

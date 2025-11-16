@@ -9,12 +9,14 @@ import { UserPostsLimitExceeded } from 'src/core/errors/userPostLimitExceeded'
 import { failure, Result, success } from '../utils/result'
 import { CoreError } from 'src/core/errors/coreError'
 import { UserWithIdNotFound } from 'src/core/errors/userWithIdNotFound'
+import { UnitOfWork } from '../utils/unitOfWork'
 
 @Injectable()
 export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>, Post> {
   private static MAX_POSTS_PER_USER = 2
 
   constructor(
+    private readonly unitOfWork: UnitOfWork,
     @Inject(IPostsRepository)
     private readonly postsRepository: IPostsRepository,
     @Inject(IUsersRepository)
@@ -23,13 +25,13 @@ export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>
   ) {}
 
   async execute(postRequest: Omit<ClassFields<Post>, 'id' | 'likeCount'>): Promise<Result<Post>> {
-    const user = await this.usersRepository.getById(postRequest.userId)
+    const user = await this.usersRepository.getById(postRequest.userId, undefined)
 
     if (!user) {
       return failure(new UserWithIdNotFound(postRequest.userId))
     }
 
-    const postCount = await this.postsRepository.countByUserId(user.id)
+    const postCount = await this.postsRepository.countByUserId(user.id, undefined)
 
     if (postCount >= CreatePostUseCase.MAX_POSTS_PER_USER) {
       return failure(new UserPostsLimitExceeded(user.id))
@@ -45,7 +47,7 @@ export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>
         this.idGenerator
       )
 
-      return success(await this.postsRepository.save(newPost))
+      return success(await this.postsRepository.save(newPost, undefined))
     } catch (err) {
       if (err instanceof CoreError) {
         return failure(err)
