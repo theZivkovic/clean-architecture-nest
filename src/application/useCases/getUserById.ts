@@ -13,7 +13,7 @@ export class GetUserByIdUseCase implements IUseCase<string, User> {
   ) {}
 
   async execute(userId: string): Promise<Result<User>> {
-    const user = await this.usersRepository.getById(userId)
+    const user = await this.usersRepository.getById(userId, undefined)
 
     if (!user) {
       return failure(new UserWithIdNotFound(userId))
