@@ -14,7 +14,9 @@ export class PgPostsRepository extends BasePgRepository<PgPost> implements IPost
   }
 
   async save(post: Post, transaction: ITransaction | undefined): Promise<Post> {
-    await this.getRepository(transaction).save(PgPost.fromPost(post))
+    await this.executeWithOptimisticLockHandling(() =>
+      this.getRepository(transaction).save(PgPost.fromPost(post))
+    )
     return post
   }
 

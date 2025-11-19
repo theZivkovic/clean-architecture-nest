@@ -9,12 +9,16 @@ export class MongoosePostLike {
   @Prop({ required: true })
   userId: string
 
+  @Prop({ required: true })
+  version: number
+
   static toPostLike(obj: any): PostLike | undefined {
     return !obj
       ? undefined
       : PostLike.create({
           userId: obj.userId,
           postId: obj.postId,
+          version: obj.version,
         })
   }
 }

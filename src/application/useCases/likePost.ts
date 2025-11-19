@@ -24,7 +24,9 @@ export class LikePostUseCase implements IUseCase<ClassFields<PostLike>, PostLike
     private readonly unitOfWork: UnitOfWork
   ) {}
 
-  async execute(postLikeRequest: ClassFields<PostLike>): Promise<Result<PostLike>> {
+  async execute(
+    postLikeRequest: Omit<ClassFields<PostLike>, 'version'>
+  ): Promise<Result<PostLike>> {
     const user = await this.usersRepository.getById(postLikeRequest.userId, undefined)
 
     if (!user) {
@@ -52,12 +54,11 @@ export class LikePostUseCase implements IUseCase<ClassFields<PostLike>, PostLike
         const newPostLike = PostLike.create({
           postId: post.id,
           userId: user.id,
+          version: 0,
         })
 
         await this.postLikesRepository.save(newPostLike, transaction)
-
         post.increaseLikes()
-
         await this.postsRepository.save(post, transaction)
 
         return success(newPostLike)

@@ -16,6 +16,9 @@ export class MongooseUser {
   @Prop({ required: true })
   lastName: string
 
+  @Prop({ required: true })
+  version: number
+
   static toUser(obj: any): User | undefined {
     return !obj
       ? undefined
@@ -24,6 +27,7 @@ export class MongooseUser {
           email: obj.email,
           firstName: obj.firstName,
           lastName: obj.lastName,
+          version: obj.version,
         })
   }
 
@@ -33,6 +37,7 @@ export class MongooseUser {
     result.firstName = user.firstName
     result.lastName = user.lastName
     result._id = user.id
+    result.version = user.version
     return result
   }
 }

@@ -7,12 +7,20 @@ export class User {
   email: string
   firstName: string
   lastName: string
+  version: number
 
-  private constructor(id: string, email: string, firstName: string, lastName: string) {
+  private constructor(
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    version: number
+  ) {
     this.id = id
     this.setEmail(email)
     this.setFirstName(firstName)
     this.setLastName(lastName)
+    this.version = version
   }
 
   private setEmail(email: string) {
@@ -38,10 +46,16 @@ export class User {
   }
 
   static create(user: Omit<ClassFields<User>, 'id'>, idGenerator: IIDGenerator): User {
-    return new User(idGenerator.generateId(), user.email, user.firstName, user.lastName)
+    return new User(
+      idGenerator.generateId(),
+      user.email,
+      user.firstName,
+      user.lastName,
+      user.version
+    )
   }
 
   static fromFields(user: ClassFields<User>): User {
-    return new User(user.id, user.email, user.firstName, user.lastName)
+    return new User(user.id, user.email, user.firstName, user.lastName, user.version)
   }
 }

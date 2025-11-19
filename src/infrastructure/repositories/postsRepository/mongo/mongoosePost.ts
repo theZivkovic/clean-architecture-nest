@@ -19,6 +19,9 @@ export class MongoosePost {
   @Prop({ required: true })
   likeCount: number
 
+  @Prop({ required: true })
+  version: number
+
   static toPost(obj: any): Post | undefined {
     return !obj
       ? undefined
@@ -28,6 +31,7 @@ export class MongoosePost {
           body: obj.body,
           userId: obj.userId,
           likeCount: obj.likeCount,
+          version: obj.version,
         })
   }
 
@@ -38,6 +42,7 @@ export class MongoosePost {
     result.userId = post.userId
     result.likeCount = post.likeCount
     result._id = post.id
+    result.version = post.version
     return result
   }
 }
