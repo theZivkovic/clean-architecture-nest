@@ -16,6 +16,8 @@ import { MongoosePostLikeSchema } from '../repositories/postLikesRepository/mong
 import { MongooseUsersRepository } from '../repositories/usersRepository/mongo/mongooseUsersRepository'
 import { MongoosePostsRepository } from '../repositories/postsRepository/mongo/mongoosePostsRepository'
 import { MongoosePostLikesRepository } from '../repositories/postLikesRepository/mongo/mongoPostLikesRepository'
+import { ITransactionFactory } from 'src/core/transactions/transaction'
+import { MongooseTransactionFactory } from '../transactions/mongo/mongooseTransactions'
 
 export class MongoDIBuilder extends BaseInfrastructureDIBuilder {
   buildImports() {
@@ -46,6 +48,10 @@ export class MongoDIBuilder extends BaseInfrastructureDIBuilder {
       {
         provide: IPostLikesRepository,
         useClass: MongoosePostLikesRepository,
+      },
+      {
+        provide: ITransactionFactory,
+        useClass: MongooseTransactionFactory,
       },
       MongooseUsersRepository,
       MongoosePostsRepository,

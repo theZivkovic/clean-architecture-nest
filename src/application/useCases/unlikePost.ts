@@ -24,7 +24,7 @@ export class UnlikePostUseCase implements IUseCase<ClassFields<PostLike>, void> 
     private readonly unitOfWork: UnitOfWork
   ) {}
 
-  async execute(postUnlikeRequest: ClassFields<PostLike>): Promise<Result<void>> {
+  async execute(postUnlikeRequest: Omit<ClassFields<PostLike>, 'version'>): Promise<Result<void>> {
     const user = await this.usersRepository.getById(postUnlikeRequest.userId, undefined)
 
     if (!user) {

@@ -18,7 +18,7 @@ export class InMemoryPostLikesRepository implements IPostLikesRepository {
   }
   get(postId: string, byUserId: string): Promise<PostLike | undefined> {
     if (this.postsToLikesByUsers.get(postId)?.has(byUserId)) {
-      return Promise.resolve(PostLike.create({ postId, userId: byUserId }))
+      return Promise.resolve(PostLike.create({ postId, userId: byUserId, version: 0 }))
     }
     return Promise.resolve(undefined)
   }

@@ -15,7 +15,15 @@ export class MongoosePostLike {
       : PostLike.create({
           userId: obj.userId,
           postId: obj.postId,
+          version: obj.__v,
         })
+  }
+
+  static fromPostLike(postLike: PostLike): MongoosePostLike {
+    const result = new MongoosePostLike()
+    result.postId = postLike.postId
+    result.userId = postLike.userId
+    return result
   }
 }
 

@@ -1,5 +1,5 @@
 import { Post } from 'src/core/models/post'
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn, VersionColumn } from 'typeorm'
 
 @Entity('posts')
 export class PgPost {
@@ -18,6 +18,9 @@ export class PgPost {
   @Column({ type: 'integer' })
   likeCount: number
 
+  @VersionColumn()
+  version: number
+
   toPost(): Post {
     return Post.fromFields({
       id: this.id,
@@ -25,6 +28,7 @@ export class PgPost {
       body: this.body,
       userId: this.userId,
       likeCount: this.likeCount,
+      version: this.version,
     })
   }
 
@@ -35,6 +39,7 @@ export class PgPost {
     pgPost.body = post.body
     pgPost.userId = post.userId
     pgPost.likeCount = post.likeCount
+    pgPost.version = post.version
     return pgPost
   }
 }

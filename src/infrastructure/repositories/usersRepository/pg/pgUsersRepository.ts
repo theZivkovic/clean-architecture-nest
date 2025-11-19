@@ -5,7 +5,6 @@ import { PgUser } from './pgUser'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { ITransaction } from 'src/core/transactions/transaction'
-import { PgTransaction } from 'src/infrastructure/transactions/pg/pgTransactions'
 import { BasePgRepository } from '../../basePgRepository'
 
 @Injectable()
@@ -19,7 +18,9 @@ export class PgUsersRepository extends BasePgRepository<PgUser> implements IUser
   }
 
   async save(user: User, transaction: ITransaction | undefined): Promise<User> {
-    await this.getRepository(transaction).save(PgUser.fromUser(user))
+    await this.executeWithOptimisticLockHandling(() =>
+      this.getRepository(transaction).save(PgUser.fromUser(user))
+    )
     return user
   }
 

@@ -24,6 +24,7 @@ export class MongooseUser {
           email: obj.email,
           firstName: obj.firstName,
           lastName: obj.lastName,
+          version: obj.__v,
         })
   }
 

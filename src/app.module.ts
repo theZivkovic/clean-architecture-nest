@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common'
-// import { PgDIBuilder } from './infrastructure/dependencyInjection/pgDIBuilder'
 import { ApplicationDIBuilder } from './application/dependencyInjection/applicationDIBuilder'
 import { PresentationDIBuilder } from './presentation/dependencyInjection/presentationDIBuilder'
 import { MongoDIBuilder } from './infrastructure/dependencyInjection/mongoDIBuilder'
 import { PgDIBuilder } from './infrastructure/dependencyInjection/pgDIBuilder'
 
-const infrastructureSetter = new PgDIBuilder()
+const infrastructureSetter = new MongoDIBuilder()
 const applicationSetter = new ApplicationDIBuilder()
 const presentationSetter = new PresentationDIBuilder()
 

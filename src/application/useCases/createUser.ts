@@ -15,13 +15,14 @@ export class CreateUserUserCase implements IUseCase<Omit<ClassFields<User>, 'id'
     @Inject(IIDGenerator) private readonly idGenerator: IIDGenerator
   ) {}
 
-  async execute(userRequest: Omit<ClassFields<User>, 'id'>): Promise<Result<User>> {
+  async execute(userRequest: Omit<ClassFields<User>, 'id' | 'version'>): Promise<Result<User>> {
     try {
       const newUser = User.create(
         {
           email: userRequest.email,
           firstName: userRequest.firstName,
           lastName: userRequest.lastName,
+          version: 0,
         },
         this.idGenerator
       )

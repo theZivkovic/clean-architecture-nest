@@ -28,6 +28,7 @@ export class MongoosePost {
           body: obj.body,
           userId: obj.userId,
           likeCount: obj.likeCount,
+          version: obj.__v,
         })
   }
 

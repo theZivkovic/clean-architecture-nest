@@ -16,7 +16,6 @@ export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>
   private static MAX_POSTS_PER_USER = 2
 
   constructor(
-    private readonly unitOfWork: UnitOfWork,
     @Inject(IPostsRepository)
     private readonly postsRepository: IPostsRepository,
     @Inject(IUsersRepository)
@@ -24,7 +23,9 @@ export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>
     @Inject(IIDGenerator) private readonly idGenerator: IIDGenerator
   ) {}
 
-  async execute(postRequest: Omit<ClassFields<Post>, 'id' | 'likeCount'>): Promise<Result<Post>> {
+  async execute(
+    postRequest: Omit<ClassFields<Post>, 'id' | 'likeCount' | 'version'>
+  ): Promise<Result<Post>> {
     const user = await this.usersRepository.getById(postRequest.userId, undefined)
 
     if (!user) {
@@ -43,6 +44,8 @@ export class CreatePostUseCase implements IUseCase<Omit<ClassFields<Post>, 'id'>
           title: postRequest.title,
           body: postRequest.body,
           userId: user.id,
+          likeCount: 0,
+          version: 0,
         },
         this.idGenerator
       )
