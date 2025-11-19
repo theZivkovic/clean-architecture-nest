@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
@@ -19,6 +20,8 @@ export function format<T>(result: Result<T>) {
   }
 
   switch (result.error.code) {
+    case CoreErrorCode.OPTIMISTIC_LOCK:
+      throw new ConflictException(`Conflict: the data was modified by other user. Please try again`)
     case CoreErrorCode.USER_WITH_EMAIL_NOT_FOUND:
       throw new NotFoundException(
         `User with email: ${(result.error as UserWithEmailNotFound).email} not found`

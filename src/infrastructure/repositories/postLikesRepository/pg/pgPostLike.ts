@@ -1,5 +1,5 @@
 import { PostLike } from 'src/core/models/postLike'
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn, VersionColumn } from 'typeorm'
 
 @Entity('postLikes')
 export class PgPostLike {
@@ -9,10 +9,14 @@ export class PgPostLike {
   @PrimaryColumn()
   userId: string
 
+  @VersionColumn()
+  version: number
+
   toPostLike(): PostLike {
     return PostLike.create({
       userId: this.userId,
       postId: this.postId,
+      version: this.version,
     })
   }
 
@@ -20,6 +24,7 @@ export class PgPostLike {
     const pgPostLike = new PgPostLike()
     pgPostLike.postId = postLike.postId
     pgPostLike.userId = postLike.userId
+    pgPostLike.version = postLike.version
     return pgPostLike
   }
 }

@@ -19,7 +19,9 @@ export class PgPostLikesRepository
   }
 
   async save(postLike: PostLike, transaction: ITransaction | undefined): Promise<PostLike> {
-    await this.getRepository(transaction).save(PgPostLike.fromPostLike(postLike))
+    await this.executeWithOptimisticLockHandling(() =>
+      this.getRepository(transaction).save(PgPostLike.fromPostLike(postLike))
+    )
     return postLike
   }
 
@@ -38,6 +40,8 @@ export class PgPostLikesRepository
     userId: string,
     transaction: ITransaction | undefined
   ): Promise<void> {
-    await this.getRepository(transaction).delete({ postId, userId })
+    await this.executeWithOptimisticLockHandling(() =>
+      this.getRepository(transaction).delete({ postId, userId })
+    )
   }
 }

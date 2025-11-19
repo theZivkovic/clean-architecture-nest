@@ -11,13 +11,22 @@ export class Post {
   body: string
   userId: string
   likeCount: number
+  version: number
 
-  private constructor(id: string, title: string, body: string, userId: string, likeCount: number) {
+  private constructor(
+    id: string,
+    title: string,
+    body: string,
+    userId: string,
+    likeCount: number,
+    version: number
+  ) {
     this.id = id
     this.setTitle(title)
     this.setBody(body)
     this.userId = userId
     this.likeCount = likeCount
+    this.version = version
   }
 
   private setTitle(title: string) {
@@ -51,14 +60,18 @@ export class Post {
     this.likeCount--
   }
 
-  static create(
-    post: Omit<ClassFields<Post>, 'id' | 'likeCount'>,
-    idGenerator: IIDGenerator
-  ): Post {
-    return new Post(idGenerator.generateId(), post.title, post.body, post.userId, 0)
+  static create(post: Omit<ClassFields<Post>, 'id'>, idGenerator: IIDGenerator): Post {
+    return new Post(
+      idGenerator.generateId(),
+      post.title,
+      post.body,
+      post.userId,
+      post.likeCount,
+      post.version
+    )
   }
 
   static fromFields(post: ClassFields<Post>): Post {
-    return new Post(post.id, post.title, post.body, post.userId, post.likeCount)
+    return new Post(post.id, post.title, post.body, post.userId, post.likeCount, post.version)
   }
 }
